@@ -17,18 +17,26 @@ public class Program {
 		//Seller seller = new Seller(1, "Branca Mendes", "branca.mendes@hotmail.com", new Date(), 10000.00, depto);
 		//System.out.println(seller);
 		
-		SellerDao sellerDao = DaoFactory.createSellerDao();
-		
+
+
+//		Teste para o findById
+//		SellerDao sellerDao = DaoFactory.createSellerDao();
 //		Seller seller = sellerDao.findById(3);
 //		System.out.println(seller);
-		
-		Department depto = new Department(2, null);
-		List<Seller> list = sellerDao.findByDepartment(depto);
-		
+//		
+//		Department depto = new Department(2, null);
+//		List<Seller> list = sellerDao.findByDepartment(depto);
+//		for(Seller obj : list) {
+//			System.out.println(obj);
+//		}
+
+		// Teste para o findAll
+		SellerDao sellerDao = DaoFactory.createSellerDao();
+		List<Seller> list = sellerDao.findAll();
 		for(Seller obj : list) {
 			System.out.println(obj);
 		}
-
+		
 
 	}
 
