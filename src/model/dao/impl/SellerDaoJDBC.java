@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,8 +26,36 @@ public class SellerDaoJDBC implements SellerDao {
 
 	@Override
 	public void insert(Seller seller) {
-		// TODO Auto-generated method stub
-
+		PreparedStatement prst = null;
+		try {
+			prst = conn.prepareStatement(
+					"Insert into Seller (Name, Email, BirthDate, BaseSalary, DepartmentId) "
+				+	"Values (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+			
+			prst.setString(1, seller.getName());
+			prst.setString(2, seller.getEmail());
+			prst.setDate(3, new java.sql.Date(seller.getBirthDate().getTime()));
+			prst.setDouble(4, seller.getBaseSalary());
+			prst.setInt(5, seller.getDepartment().getId());
+			
+			int resultInsert = prst.executeUpdate();
+			
+			if (resultInsert > 0 ) {
+				ResultSet rs = prst.getGeneratedKeys();
+				if (rs.next()) {
+					int id = rs.getInt(1);
+					seller.setId(id);
+				}
+				DB.closeResultSet(rs);
+			} else {
+				throw new DbException("Erro ao incluir o registro");
+			}
+			
+		} catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		} finally {
+			DB.closeStatement(prst);
+		}
 	}
 
 	@Override
