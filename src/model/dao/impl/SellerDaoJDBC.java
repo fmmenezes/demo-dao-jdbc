@@ -29,18 +29,18 @@ public class SellerDaoJDBC implements SellerDao {
 		PreparedStatement prst = null;
 		try {
 			prst = conn.prepareStatement(
-					"Insert into Seller (Name, Email, BirthDate, BaseSalary, DepartmentId) "
-				+	"Values (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
-			
+					"Insert into Seller (Name, Email, BirthDate, BaseSalary, DepartmentId) " + "Values (?, ?, ?, ?, ?)",
+					Statement.RETURN_GENERATED_KEYS);
+
 			prst.setString(1, seller.getName());
 			prst.setString(2, seller.getEmail());
 			prst.setDate(3, new java.sql.Date(seller.getBirthDate().getTime()));
 			prst.setDouble(4, seller.getBaseSalary());
 			prst.setInt(5, seller.getDepartment().getId());
-			
+
 			int resultInsert = prst.executeUpdate();
-			
-			if (resultInsert > 0 ) {
+
+			if (resultInsert > 0) {
 				ResultSet rs = prst.getGeneratedKeys();
 				if (rs.next()) {
 					int id = rs.getInt(1);
@@ -50,7 +50,7 @@ public class SellerDaoJDBC implements SellerDao {
 			} else {
 				throw new DbException("Erro ao incluir o registro");
 			}
-			
+
 		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
 		} finally {
@@ -60,7 +60,26 @@ public class SellerDaoJDBC implements SellerDao {
 
 	@Override
 	public void update(Seller seller) {
-		// TODO Auto-generated method stub
+		PreparedStatement prst = null;
+		try {
+			prst = conn.prepareStatement(
+					"Update Seller set Name = ?, Email = ?, BirthDate = ?, BaseSalary = ?, DepartmentId = ? "
+							+ "where Id = ?");
+
+			prst.setString(1, seller.getName());
+			prst.setString(2, seller.getEmail());
+			prst.setDate(3, new java.sql.Date(seller.getBirthDate().getTime()));
+			prst.setDouble(4, seller.getBaseSalary());
+			prst.setInt(5, seller.getDepartment().getId());
+			prst.setInt(6, seller.getId());
+
+			prst.executeUpdate();
+
+		} catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		} finally {
+			DB.closeStatement(prst);
+		}
 
 	}
 
@@ -114,9 +133,8 @@ public class SellerDaoJDBC implements SellerDao {
 		PreparedStatement prst = null;
 		ResultSet rs = null;
 		try {
-			prst = conn.prepareStatement(
-					"SELECT seller.*,department.Name as DepName " + "FROM seller INNER JOIN department "
-							+ "ON seller.DepartmentId = department.Id order by Name");
+			prst = conn.prepareStatement("SELECT seller.*,department.Name as DepName "
+					+ "FROM seller INNER JOIN department " + "ON seller.DepartmentId = department.Id order by Name");
 
 			rs = prst.executeQuery();
 
@@ -131,7 +149,7 @@ public class SellerDaoJDBC implements SellerDao {
 					depto = new Department();
 					depto.setId(rs.getInt("DepartmentId"));
 					depto.setName(rs.getString("DepName"));
-					
+
 					map.put(rs.getInt("DepartmentId"), depto);
 
 				}
@@ -181,7 +199,7 @@ public class SellerDaoJDBC implements SellerDao {
 					depto = new Department();
 					depto.setId(rs.getInt("DepartmentId"));
 					depto.setName(rs.getString("DepName"));
-					
+
 					map.put(rs.getInt("DepartmentId"), depto);
 
 				}

@@ -41,12 +41,25 @@ public class Program {
 		*/
 		
 		// Teste 4 Inserindo o registro
+		/*
 		SellerDao sellerDao = DaoFactory.createSellerDao();
 		Department depto = new Department(2, null);
 		Seller seller = new Seller(null, "Cibele", "cibele@gmail.com", new Date(), 2000.00, depto);
 		sellerDao.insert(seller);
 		System.out.println("Inserido! Novo id = " + seller.getId());
+		*/
 
+		// Teste 5 Alterando o registro
+		SellerDao sellerDao = DaoFactory.createSellerDao();
+			
+		Department depto = new Department(2, null);
+		Seller seller = new Seller();
+		seller = sellerDao.findById(1);
+		seller.setName("Tatolina");
+		sellerDao.update(seller);
+		System.out.println("Alterado!");
+
+		
 	}
 
 }
